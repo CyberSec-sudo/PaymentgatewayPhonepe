@@ -1,0 +1,82 @@
+body {
+  background-color: #f8f9fa;
+}
+
+.content {
+  background-color: #ffffff;
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.transaction-container {
+  margin-top: 20px;
+}
+
+.total-amount {
+  background-color: #e9ecef;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.total-amount h3 {
+  margin-bottom: 10px;
+}
+
+.date-selector {
+  display: flex;
+  align-items: center;
+}
+
+.date-selector label {
+  margin-right: 10px;
+}
+
+.date-selector input {
+  padding: 10px;
+  font-size: 1em;
+  margin-right: 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+/* .transaction-date {
+  margin-top: 20px;
+}
+
+.transaction-date label {
+  margin-right: 10px;
+} */
+
+.transaction-list {
+  margin-top: 20px;
+}
+
+.transaction-list h3 {
+  margin-bottom: 20px;
+}
+
+.table {
+  margin-top: 10px;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #e2e6ea;
+  cursor: pointer;
+}
+
+#no-transaction-msg {
+  font-size: 1.2em;
+}
+
+.navbar-custom {
+  background-color: #343a40;
+}
+
+.navbar-custom .navbar-brand,
+.navbar-custom .nav-link {
+  color: #ffffff;
+}
+

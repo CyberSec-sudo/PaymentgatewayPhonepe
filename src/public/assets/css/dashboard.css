@@ -1,0 +1,147 @@
+body {
+  line-height: 1.6; 
+  background-color: #f4f4f4;
+  color: #333; 
+}
+
+.container {
+  /* max-width: 960px; */
+  margin: 0 auto;
+  /* padding: 20px; */
+}
+.h2 {
+  padding-left: 20px;
+}
+.navbar {
+  background-color: #fa0101;
+  color: white;
+  padding: 15px 0;
+}
+
+.navbar-brand {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.nav-link {
+  color: rgb(210, 19, 19);
+  margin-right: 20px;
+}
+
+.nav-link:hover {
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+.navbar .btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.navbar .btn-danger:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+main {
+  background-color: white;
+  padding: 30px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"],
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+button[type="submit"] {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+/* Basic Notification Container */
+.notification {
+  background-color: #fff1f0; 
+  color: #d9534f;             
+  border: 1px solid #eed3d7;   
+  padding: 15px;             
+  border-radius: 10px;             
+  text-align: center;        
+  position: fixed;            
+  top: 50%;                    
+  left: 50%;                
+  transform: translate(-50%, -50%); 
+  z-index: 1000;             
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);    
+  font-size: 1.1rem;           
+  background-image: linear-gradient(to bottom right, #fff5f5, #fff1f0); 
+
+
+  animation: pulse 1.5s infinite;
+}
+
+.notification p {
+  font-weight: 500;          
+  margin: 0;                 
+
+
+.notification i {
+  margin-right: 5px;       
+}
+
+.notification.show {
+  animation: slideIn 0.5s ease-out; 
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+
+@keyframes slideIn {
+  from { transform: translateX(100%); } 
+  to { transform: translateX(0); }
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.8; }
+  100% { opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .container {
+      padding: 10px;
+  }
+
+  .navbar-nav {
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .nav-link {
+      margin: 10px 0;
+  }
+}

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('include/head') %>
+        <link rel="stylesheet" href="/css/settings.css">
+        <title>Settings</title>
+</head>
+
+<body>
+    <%- include('include/navbar') %>
+        <div class="container mt-5">
+            <h1>Settings</h1>
+
+            <div class="form-group">
+                <label for="numberInput">Enter an Amount:</label>
+                <input type="number" id="numberInput" class="form-control" placeholder="Enter number">
+            </div>
+
+            <div class="form-group">
+                <label for="toggleSwitch">Toggle On/Off:</label>
+                <div class="toggle-switch">
+                    <input type="checkbox" id="toggleSwitch" class="toggle-input">
+                    <label for="toggleSwitch" class="toggle-label"></label>
+                </div>
+            </div>
+        </div>
+        <!-- footer  -->
+        <%- include('include/footer') %>
+            <script>
+                const notyf = new Notyf({
+                    duration: 1000,
+                    position: {
+                        x: 'right',
+                        y: 'top',
+                    },
+                    types: [
+                        {
+                            type: 'success',
+                            message: 'Auto Withdarwal Enabled',
+                            background: 'green',
+                            duration: 2000,
+                            dismissible: true
+                        },
+                        {
+                            type: 'error',
+                            message: 'Auto Withdarwal Disabled',
+                            background: 'indianred',
+                            duration: 2000,
+                            dismissible: true
+                        }
+                    ]
+                });
+                // Function to simulate fetching auto withdrawal data
+                // Function to handle toggle change
+                async function onToggleChange() {
+                    const isChecked = $('#toggleSwitch').is(':checked');
+                    const amount = $("#numberInput").val();
+                    const autowithdrawal = await autoWithdrawal({ amount, status: isChecked });
+                    if (!autowithdrawal.error && autowithdrawal != null) {
+                        const message = autowithdrawal.data.message;
+                        if (!autowithdrawal.data.error) {
+                            notyf.success(message);
+                        } else {
+                            notyf.error(message);
+                            $('#toggleSwitch').prop('checked', false);
+                        }
+                    }
+                    // Add your code here to handle the change event, like saving the new status
+                }
+                $(document).ready(async function () {
+                    const getautowithdrawal = await getAutoWithdrawal();
+                    if (!getautowithdrawal.error && getautowithdrawal != null) {
+                        if (!getautowithdrawal.data.error) {
+                            const amount = getautowithdrawal.data.amount;
+                            const status = getautowithdrawal.data.status;
+
+                            // Set the values in the form
+                            $('#numberInput').val(amount);
+                            $('#toggleSwitch').prop('checked', status);
+
+                            // Show the container
+                            $('.container').show();
+                        }
+                    }
+                    $('#toggleSwitch').change(await onToggleChange);
+
+                });
+            </script>
+</body>
+
+</html>

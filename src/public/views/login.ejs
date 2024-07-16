@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <title>Login</title>
+  <link rel="stylesheet" type="text/css" href="/css/login.css">
+  <%- include('include/head') %>
+</head>
+
+<body>
+  <div class="wrapper">
+    <h1>Login</h1>
+    <div class="input-box">
+      <input type="text" name="" id="email" placeholder="Email" required>
+    </div>
+    <div class="input-box">
+      <input type="password" name="" id="password" placeholder="Password" required>
+    </div>
+
+    <button type="submit" class="btn" id="login-btn">Login</button>
+
+    <div class="register-link">
+      <p>Don't have an account? <a href="/register">Register</a></p>
+    </div>
+  </div>
+</body>
+<script>
+  $(document).ready(async () => {
+    $("#login-btn").click(async () => {
+      const email = $("#email").val();
+      const password = $("#password").val();
+
+      const notyf = new Notyf({
+        duration: 1000,
+        position: {
+          x: 'right',
+          y: 'top',
+        },
+        types: [
+          {
+            type: 'success',
+            background: 'green',
+            duration: 2000,
+            dismissible: true
+          },
+          {
+            type: 'error',
+            background: 'indianred',
+            duration: 2000,
+            dismissible: true
+          }
+        ]
+      });
+      if (!email || !password) {
+        notyf.error("Please enter both email and password");
+        return;
+      }
+
+      const userlogin = await login({ email: email, password: password });
+      if (!userlogin.data.error) {
+        notyf.success(userlogin.data.message);
+        setTimeout(() => {
+          window.location.replace('/dashboard')
+        }, 2000)
+      } else {
+        notyf.error(userlogin.data.message);
+      }
+    });
+  });
+</script>
+
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <%- include('include/head') %>
+    <link rel="stylesheet" type="text/css" href="/css/dashboard.css">
+</head>
+
+<body>
+
+  <%- include('include/navbar') %>
+
+    <main role="main" class="container mt-4">
+      <div
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Dashboard</h1>
+      </div>
+
+      <div class="dashboard">
+        <% if (!status) { %>
+          <p class="notification">Waiting for admin verification</p>
+          <% } else { %>
+            <div id="verification" style="display: none;" class="form-group">
+              <label for="mobile">Mobile Number:</label>
+              <input type="text" id="mobile" name="mobile" class="form-control" required>
+              <div id="otp-container" style="display: none;">
+                <label for="otp">OTP:</label>
+                <input type="text" id="otp" name="otp" class="form-control" disabled>
+                <button id="resend-otp" class="btn btn-secondary mt-2">Resend OTP</button>
+              </div>
+              <button id="send-otp" class="btn btn-primary mt-2">SEND OTP</button>
+              <button id="verify-otp" style="display: none;" class="btn btn-success mt-2">VERIFY</button>
+            </div>
+
+            <div class="container mt-4">
+              <div id="data-container" class="details border p-3"></div>
+
+              <button id="delete-number" style="display: none;" class="btn btn-danger mt-2">Delete Number</button>
+            </div>
+            <% } %>
+      </div>
+    </main>
+    </div>
+    </div>
+    <!-- THIS IS A COMMENT REMOVE IT -->
+    <!-- footer  -->
+    <%- include('include/footer') %>
+
+    <script src="https://cdn.notiflix.com/notiflix-aio-3.2.6.min.js"></script>
+    <script>
+      function toggleSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        sidebar.classList.toggle('active');
+      }
+
+      const notyf = new Notyf({
+        duration: 1000,
+        position: {
+          x: 'right',
+          y: 'top',
+        },
+        types: [
+          {
+            type: 'success',
+            background: 'green',
+            duration: 2000,
+            dismissible: true
+          },
+          {
+            type: 'error',
+            background: 'indianred',
+            duration: 2000,
+            dismissible: true
+          }
+        ]
+      });
+
+      $(document).ready(async function () {
+          <% if (status) { %>
+            const checknum = await checkNumber();
+          if (!checknum.data.error) {
+            if (!checknum.data.linked) {
+              $("#verification").show();
+            } else {
+              const data = checknum.data.userData;
+              const apiKeyElement = $('<p>').text(`API Key: ${data.apikey}`);
+              const nameElement = $('<p>').text(`Name: ${data.name}`);
+              const numberElement = $('<p>').text(`Number: ${data.number}`);
+
+              $('#data-container').append(apiKeyElement, nameElement, numberElement);
+              $('#delete-number').show();
+            }
+
+            $("#send-otp").click(async () => {
+              const mobile = $("#mobile").val();
+              if (!mobile) {
+                notyf.error("Please Enter Mobile Number");
+                return;
+              }
+              const genotp = await generateOtp({ number: mobile });
+              if (!genotp.data.error) {
+                notyf.success(genotp.data.message);
+                $('#otp-container').show();
+                $('#otp').prop('disabled', false);
+                $("#send-otp").hide();
+                $("#verify-otp").show();
+              } else {
+                notyf.error(genotp.data.message);
+              }
+            });
+
+            $("#verify-otp").click(async () => {
+              const otp = $("#otp").val();
+              if (!otp) {
+                notyf.error("Please Enter OTP");
+                return;
+              }
+              const verify = await verifyOtp({ otp: otp });
+              if (!verify.data.error) {
+                notyf.success(verify.data.message);
+                setTimeout(() => {
+                  window.location.reload();
+                }, 2000);
+              } else {
+                notyf.error(verify.data.message);
+              }
+            });
+
+            $("#resend-otp").click(async () => {
+              const mobile = $("#mobile").val();
+              if (!mobile) {
+                notyf.error("Please Enter Mobile Number");
+                return;
+              }
+              const genotp = await generateOtp({ number: mobile });
+              if (!genotp.data.error) {
+                notyf.success(genotp.data.message);
+              } else {
+                notyf.error(genotp.data.message);
+              }
+            });
+
+            // Attach the delete event to the button with id 'delete-number'
+            $("#delete-number").click(async () => {
+              await Notiflix.Confirm.show(
+                'Delete Confirmation',
+                'Are you sure you want to delete the number?',
+                'Yes',
+                'No',
+                async () => {
+                  const deletenumber = await deleteNum();
+                  if (!deletenumber.data.error) {
+                    notyf.success(deletenumber.data.message);
+                    setTimeout(() => {
+                      $("#data-container").empty();
+                      $('#delete-number').hide();
+                      $("#verification").show();
+                    }, 2000);
+                  } else {
+                    notyf.error(deletenumber.data.message);
+                  }
+                },
+              );
+            });
+          }
+          <% } %>
+        });
+    </script>
+
+
+
+</body>
+
+</html>

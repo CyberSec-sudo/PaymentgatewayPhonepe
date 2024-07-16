@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Transaction Statement</title>
+    <%- include('include/head') %>
+
+        <link rel="stylesheet" href="/css/withdraw.css">
+</head>
+
+<body>
+    <%- include('include/navbar') %>
+        <div class="container container-xl mt-5">
+            <h1>Transaction Statement</h1>
+            <div class="summary">
+                <p><strong>Total Balance:</strong> <span id="total-balance"></span></p>
+                <p><strong>Total Addition:</strong> <span id="total-addition"></span></p>
+                <p><strong>Total Withdrawal:</strong> <span id="total-withdrawal"></span></p>
+                <p><strong>Opening Balance:</strong> <span id="opening-balance"></span></p>
+                <p><strong>Closing Balance:</strong> <span id="closing-balance"></span></p>
+                <p><strong>Total Interest Added:</strong> <span id="total-interest-added"></span></p>
+                <p><strong>Closing Balance Time:</strong> <span id="closing-balance-time"></span></p>
+            </div>
+            <button class="btn btn-primary" id="withdraw-button">Withdraw</button>
+
+            <h2>Statement Details</h2>
+            <div class="date-selector">
+                <label for="select-date"><strong>Select Date:</strong></label>
+                <input type="date" id="select-date">
+                <button class="btn btn-success" id="submit-btn">Fetch Transactions</button>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Particulars</th>
+                            <th>Amount</th>
+                            <th>Transaction Indicator</th>
+                            <th>Transaction Type</th>
+                            <th>Mode</th>
+                            <th>Reference ID</th>
+                            <th>Created At</th>
+                            <th>Updated At</th>
+                            <th>Updated Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="statement-details">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Withdraw Popup -->
+        <div id="withdraw-popup" style="display: none;" class="popup">
+            <div class="popup-content">
+                <span class="close-btn"><i class="lni lni-cross-circle"></i></span>
+                <h2>Withdraw Amount</h2>
+                <p><strong>Total Withdrawable Balance:</strong> <span id="total-withdraw-able-balance"></span></p>
+                <p><strong>Total Balance:</strong> <span id="total-balance-popup"></span></p>
+                <p><strong>Total Hold Amount:</strong> <span id="total-hold-amount"></span></p>
+                <form id="withdraw-form">
+                    <label for="withdraw-amount">Amount:</label>
+                    <input type="text" id="withdraw-amount" name="withdraw-amount" required>
+                    <button type="submit">Confirm Withdraw</button>
+                </form>
+            </div>
+        </div>
+        <!-- footer  -->
+        <%- include('include/footer') %>
+
+        <script>
+            $(document).ready(async function () {
+                var currentDate = new Date();
+
+                // Extract the date components
+                var year = currentDate.getFullYear();
+                var month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                var day = String(currentDate.getDate()).padStart(2, '0');
+
+                // Create the formatted date string
+                var formattedDate = year + '-' + month + '-' + day;
+                $("#select-date").val(formattedDate);
+
+                const getTransactionLogs = async (date) => {
+                    const withdrawalDetails = await getWithdrawalDetails({ date: date });
+                    if (!withdrawalDetails.error && withdrawalDetails.data && !withdrawalDetails.data.error) {
+                        const data = withdrawalDetails.data.data;
+
+                        // Update summary
+                        $("#total-balance").text(data.totalBalance);
+                        $("#total-addition").text(data.totalAdition);
+                        $("#total-withdrawal").text(data.totalWithdrawal);
+                        $("#opening-balance").text(data.openingBalance);
+                        $("#closing-balance").text(data.closingBalance);
+                        $("#total-interest-added").text(data.totalInterest);
+
+                        $("#closing-balance-time").text(data.closingBalanceTime);
+
+                        // Update statement details
+                        const statementDetails = data.withdrawalStatement;
+                        const statementTableBody = $("#statement-details");
+                        statementTableBody.empty(); // Clear existing rows
+
+                        statementDetails.forEach(statement => {
+                            const row = `<tr>
+                            <td>${statement.date}</td>
+                            <td>${statement.particulars}</td>
+                            <td>${statement.amount}</td>
+                            <td>${statement.txn_indicator}</td>
+                            <td>${statement.txn_type}</td>
+                            <td>${statement.mode}</td>
+                            <td>${statement.reference_id}</td>
+                            <td>${new Date(parseInt(statement.created_at)).toLocaleString('en-AS', {
+                                weekday: 'long', // day of the week
+                                hour: 'numeric',
+                                minute: 'numeric',
+                                second: 'numeric',
+                                hour12: true
+                            })}</td>
+                            <td>${new Date(parseInt(statement.updated_at)).toLocaleString('en-AS', {
+                                weekday: 'long', // day of the week
+                                hour: 'numeric',
+                                minute: 'numeric',
+                                second: 'numeric',
+                                hour12: true, timeZone: 'Asia/Kolkata'
+                            })}</td>
+                            <td>${new Date(statement.updated_date).toLocaleString('en-AS', {
+                                weekday: 'long', // day of the week
+                                hour: 'numeric',
+                                minute: 'numeric',
+                                second: 'numeric',
+                                hour12: true, timeZone: 'Asia/Kolkata'
+                            })}</td>
+                        </tr>`;
+                            statementTableBody.append(row);
+                        });
+                    }
+                };
+
+                $("#submit-btn").click(function () {
+                    var selectedDate = $("#select-date").val();
+                    getTransactionLogs(selectedDate);
+                });
+
+                // Fetch transaction logs for the default date
+                getTransactionLogs(formattedDate);
+
+                // Hide the popup initially
+
+                // Show the popup when the "Withdraw" button is clicked
+                $("#withdraw-button").click(async function () {
+                    $("#withdraw-popup").fadeIn();
+                    const totalbalance = await getTotalBalance();
+                    if (!totalbalance.error && !totalbalance.data.error) {
+                        const data = totalbalance.data.data
+                        $("#total-balance-popup").text(data.totalBalance);
+                        $("#total-withdraw-able-balance").text(data.totalWithdrawalBalance);
+                        $("#total-hold-amount").text(data.totalAmountHold);
+                        $("#withdraw-amount").val(data.totalWithdrawalBalance)
+                    }
+
+                });
+
+                // Hide the popup when the close button is clicked
+                $(".close-btn").click(function () {
+                    $("#withdraw-popup").fadeOut();
+                });
+                const notyf = new Notyf({
+                    duration: 1000,
+                    position: {
+                        x: 'right',
+                        y: 'top',
+                    },
+                    types: [
+                        {
+                            type: 'success',
+                            background: 'green',
+                            duration: 2000,
+                            dismissible: true
+                        },
+                        {
+                            type: 'error',
+                            background: 'indianred',
+                            duration: 2000,
+                            dismissible: true
+                        }
+                    ]
+                });
+                // Additional logic for form submission goes here
+                $("#withdraw-form").submit(async function (e) {
+                    e.preventDefault();
+                    var amount = $("#withdraw-amount").val();
+                    // Handle the withdraw amount here
+                    const withdrawal = await withdrawalAmount({ amount });
+                    if (!withdrawal.error) {
+                        if (!withdrawal.data.error) {
+                            notyf.success(withdrawal.data.message)
+                        } else {
+                            notyf.error(withdrawal.data.message)
+                        }
+                    } else {
+                        notyf.error(withdrawal.message)
+                    }
+                    //$("#withdraw-popup").fadeOut();
+                });
+            });
+        </script>
+</body>
+
+</html>

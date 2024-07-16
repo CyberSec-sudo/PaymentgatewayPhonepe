@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <title>Transaction Section</title>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" type="text/css" href="/css/transaction.css">
+  <%- include('include/head') %>
+</head>
+
+<body>
+  <%- include('include/navbar') %>
+    <div class="content container-xl mt-5">
+      <h2 class="text-center mb-4">Transaction Section</h2>
+      <div class="transaction-container">
+        <div class="total-amount mb-4">
+          <h3>Total Amount Today</h3>
+          <p id="total-amount" class="fw-bold display-4">₹0.00</p>
+        </div>
+        <div class="transaction-date mb-4">
+          <!-- <div class="input-group">
+            <label for="transactionDate" class="form-label mr-3">Select Date:</label>
+            <input type="date" id="transactionDate" class="form-control">
+            <div class="input-group-append">
+              <button class="btn btn-success" id="submit-btn">Fetch Transactions</button>
+            </div> -->
+          <div class="date-selector">
+            <label for="transactionDate"><strong>Select Date:</strong></label>
+            <input type="date" id="transactionDate">
+            <button class="btn btn-success" id="submit-btn">Fetch Transactions</button>
+          </div>
+        </div>
+      </div>
+      <div class="transaction-list">
+        <h3>Total Transactions</h3>
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Amount</th>
+                <th>UTR</th>
+                <th>Payment</th>
+                <th>Payment Time</th>
+                <th>Transaction Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Tables Inserted  Dynamically here -->
+            </tbody>
+          </table>
+        </div>
+        <p id="no-transaction-msg" class="text-center text-danger mt-3" style="display: none;">No Transactions Found
+        </p>
+      </div>
+    </div>
+    </div>
+
+    <!-- footer  -->
+    <%- include('include/footer') %>
+
+      <!-- Bootstrap JS and dependencies CDN -->
+      <%- include('include/bscript') %>
+        <script>
+          $(document).ready(async function () {
+            // Get current date
+            var currentDate = new Date();
+
+            // Extract the date components
+            var year = currentDate.getFullYear();
+            var month = String(currentDate.getMonth() + 1).padStart(2, '0');
+            var day = String(currentDate.getDate()).padStart(2, '0');
+
+            // Create the formatted date string
+            var formattedDate = year + '-' + month + '-' + day;
+
+            // Set default date value in the date picker
+            $("#transactionDate").val(formattedDate);
+
+            // Function to fetch transaction logs for the selected date
+            const getTransactionLogs = async (date) => {
+              const transactions = await fetchTransaction({ date: date });
+
+              // Clear existing table rows
+              $("tbody").empty();
+
+              if (transactions.data.length === 0) {
+                // Show "No Transaction Found" message
+                $("#no-transaction-msg").show();
+                $("#total-amount").text('₹' + parseFloat(0).toFixed(2));
+              } else {
+                // Hide "No Transaction Found" message
+                $("#no-transaction-msg").hide();
+
+                // Iterate over the transactions and populate the table
+                let total = 0;
+                transactions.data.forEach(function (transaction, index) {
+                  total += parseFloat(transaction.amount);
+                  var row = $("<tr>");
+                  row.append($("<td>").text(index + 1));
+                  row.append($("<td>").text(transaction.name));
+                  row.append($("<td>").text('₹' + transaction.amount));
+                  row.append($("<td>").text(transaction.utr));
+                  row.append($("<td>").text(transaction.payment));
+                  row.append($("<td>").text(transaction.payment_time));
+                  row.append($("<td>").text(transaction.transaction_time));
+
+                  $("tbody").append(row);
+                });
+                $("#total-amount").text('₹' + parseFloat(total).toFixed(2));
+              }
+            };
+
+            // Handle submit button click
+            $("#submit-btn").click(function () {
+              var selectedDate = $("#transactionDate").val();
+              getTransactionLogs(selectedDate);
+            });
+
+            // Fetch transaction logs for the default date
+            getTransactionLogs(formattedDate);
+          });
+        </script>
+</body>
+
+</html>

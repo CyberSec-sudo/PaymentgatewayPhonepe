@@ -1,0 +1,129 @@
+body {
+    background-color: #f9f9f9;
+}
+
+.container {
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 6px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+.summary p {
+    font-size: 1.1em;
+    color: #555;
+    background: #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    /* border: 2px solid red; */
+}
+/* .sum-area {
+ 
+} */
+#withdraw-button {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.date-selector {
+    display: flex;
+    align-items: center;
+}
+
+.date-selector label {
+    margin-right: 10px;
+}
+
+.date-selector input {
+    padding: 10px;
+    font-size: 1em;
+    margin-right: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+/* Popup Styles */
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.close-btn {
+    position: absolute;
+    margin-left: 110px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.close-btn:hover {
+    color: red;
+}
+
+#withdraw-form label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+#withdraw-form input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#withdraw-form button {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#withdraw-form button:hover {
+    background-color: #218838;
+}

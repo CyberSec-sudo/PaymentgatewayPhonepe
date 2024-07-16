@@ -1,0 +1,30 @@
+.navbar {
+    background-color: #fa0101;
+    color: white;
+    padding: 15px 0;
+  }
+  
+  .navbar-brand {
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+  
+  .nav-link {
+    color: rgb(210, 19, 19);
+    margin-right: 20px;
+  }
+  
+  .nav-link:hover {
+    text-decoration: none;
+    opacity: 0.8;
+  }
+  
+  .navbar .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+  }
+  
+  .navbar .btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+  }
