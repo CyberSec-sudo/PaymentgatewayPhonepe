@@ -296,14 +296,13 @@ async generateDeviceFingerprint() {
 			  };
 
 			const response = (await axios.post('https://business-api.phonepe.com/apis/merchant-insights/v3/transactions/details', userResponseData, {headers})).data;
-
-
-			if(response.success){
+			console.log(response)
+			if(response.success && response.data.paymentState === 'COMPLETED'){
 				return {
 					message: "Transaction retrieved successfully",
 					error: false,
 					utr: response.data.utr,
-					amount: response.data.amount,
+					amount: response.data.amount / 100,
 					name: response.data.customerDetails.userName,
 					payment: response.data.paymentApp.paymentApp,
 					payment_time: new Date(response.data.transactionDate).toLocaleString('en-AS', {

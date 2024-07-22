@@ -49,7 +49,7 @@ class APIHandler {
 					utr: response.data.utr,
 					data: {
 						name: response.data.customerDetails.userName,
-						amount: response.data.amount,
+						amount: response.data.amount / 100,
 						utr: utrid,
 						payment: response.data.paymentApp.paymentApp,
 						time:response.data.transactionDate,
@@ -64,7 +64,7 @@ class APIHandler {
 				message: !check ? "Transaction Added successfully": "Transaction Already Added",
 				error: !check ? false: true,
 				utr: response.data.utr,
-				amount: response.data.amount,
+				amount: response.data.amount / 100,
 				name: response.data.customerDetails.userName,
 				status: response.data.payResponseCode,
 				payment: response.data.transactionDate,

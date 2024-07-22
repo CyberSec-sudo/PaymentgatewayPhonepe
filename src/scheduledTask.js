@@ -8,7 +8,6 @@ const performTask = async () => {
     for(const {refreshToken, token, fingerprint, deviceFingerprint, email} of users){
         try {
             const checksum = (await axios.get(`${process.env.PHONEPE_URL}/api/refreshtokenhash`)).data;
-            console.log(checksum)
             const headers = {
                 'X-Refresh-Token': refreshToken,
                 'X-Auth-Token': token,
@@ -26,6 +25,7 @@ const performTask = async () => {
                 'Accept-Encoding': 'gzip, deflate, br',
             };
             const response = (await axios.post("https://business-api.phonepe.com/apis/merchant-insights/v1/auth/refresh", {}, {headers})).data;
+            //console.log(response)
             await UserApi.findOneAndUpdate({email: email}, {$set: {token: response.token, refreshToken: response.refreshToken}})
         } catch (error) {
             console.log(error)
