@@ -10,7 +10,7 @@ let server = app.listen(config.port, async () => {
 })
 
 // Schedule the task to run every 30 minutes
-cron.schedule('*/10 * * * * *', async () => {
+cron.schedule('*/25 * * * *', async () => {
     await performTask()
 })
 
